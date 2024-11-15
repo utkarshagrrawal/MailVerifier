@@ -9,9 +9,8 @@ import (
 func ApplyCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var allowedOrigins = map[string]bool{
-			"localhost:5173":           true,
-			"mailverifier.vercel.app":  true,
-			"mail-verifier.vercel.app": true,
+			"localhost:5173":          true,
+			"mailverifier.vercel.app": true,
 		}
 
 		origin := r.Header.Get("origin")
