@@ -28,5 +28,17 @@ func VerifyMail(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(mxValidity)
 		return
 	}
-	json.NewEncoder(w).Encode(mxValidity)
+	disposability := services.CheckDisposableDomain(emailComponents[1])
+	if disposability != "Domain is not disposable" {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(disposability)
+		return
+	}
+	deliverability := services.CheckMailDeliverable(email)
+	if deliverability != "Mail address is deliverable" {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(deliverability)
+		return
+	}
+	json.NewEncoder(w).Encode("Email is available")
 }

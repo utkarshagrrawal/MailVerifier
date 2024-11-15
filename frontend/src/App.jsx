@@ -39,6 +39,8 @@ function App() {
 
   const [email, setEmail] = useState("");
   const [suggestedDomain, setSuggestedDomain] = useState([]);
+  const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setEmail(e.target.value);
@@ -48,19 +50,32 @@ function App() {
         const filteredDomains = domains.filter((d) => d.includes(domain));
         setSuggestedDomain(filteredDomains);
       }
+    } else {
+      setSuggestedDomain([]);
     }
   };
 
   const handleVerify = (e) => {
     e.preventDefault();
 
-    // verify email using API
+    setResponse("");
+    setSuggestedDomain([]);
+    setLoading(true);
+
     axios
       .get(import.meta.env.VITE_API_URL + "/api/verify?email=" + email)
       .then((res) => {
         if (res.data) {
-          alert(res.data);
+          setResponse("Email is valid and deliverable.");
         }
+      })
+      .catch((err) => {
+        setResponse(
+          err.response?.data || "An error occurred. Please try again."
+        );
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -76,9 +91,20 @@ function App() {
             Enhance your email lists with our reliable, fast email verification
             service.
           </p>
+          <p
+            className={`text-sm font-medium p-4 rounded-lg mt-4 transition-all duration-300 ${
+              !response
+                ? "hidden"
+                : response === "Email is valid and deliverable."
+                ? "bg-green-100 text-green-700 border border-green-300"
+                : "bg-red-100 text-red-700 border border-red-300"
+            }`}
+          >
+            {response}
+          </p>
           <form
             onSubmit={handleVerify}
-            className="max-w-xl mx-auto flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0"
+            className="mt-4 mx-auto flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0"
           >
             <input
               type="email"
@@ -91,9 +117,12 @@ function App() {
             />
             <button
               type="submit"
-              className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-8 rounded-md transition duration-300 sm:ml-4"
+              className={`w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-8 rounded-md transition duration-300 sm:ml-4 ${
+                loading && "opacity-50 cursor-not-allowed"
+              }`}
+              disabled={loading}
             >
-              Verify
+              {loading ? "Verifying..." : "Verify"}
             </button>
           </form>
           <div className="mt-4 w-full flex justify-center items-center flex-wrap gap-2">
@@ -147,6 +176,39 @@ function App() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="container p-8 rounded-lg mx-auto my-10">
+        <h2 className="text-2xl text-center font-bold text-gray-800 mb-4">
+          About This Project
+        </h2>
+
+        <p className="text-gray-700 mb-4">
+          This project's backend is hosted on Render, which means the server may
+          go into a "sleep" mode when not in use. As a result, there can be a
+          spin-up time of around 2 minutes for the API to respond initially
+          after inactivity. This setup allows us to provide free hosting without
+          compromising functionality, though it may introduce a short delay for
+          the first request.
+        </p>
+
+        <h3 className="text-xl text-center font-semibold text-gray-800 mt-6 mb-2">
+          About the Developer
+        </h3>
+
+        <p className="text-gray-700 mb-4">
+          Hi there! I'm a passionate individual developer dedicated to building
+          and deploying innovative solutions. If you'd like to check out more of
+          my work, feel free to explore my{" "}
+          <a
+            href="https://github.com/utkarshagrrawal"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline text-blue-500"
+          >
+            gitbub profile.
+          </a>
+        </p>
       </section>
 
       {/* Footer Section */}
