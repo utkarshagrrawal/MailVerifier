@@ -59,8 +59,8 @@ func CheckDisposableDomain(domain string) string {
 func CheckMailDeliverable(mail string) string {
 	for _, domain := range mxDomains {
 		client, err := smtp.Dial(domain)
-		defer client.Close()
 		if err == nil {
+			defer client.Close()
 			err := client.Verify(mail)
 			if err == nil {
 				return "Mail address is deliverable"
