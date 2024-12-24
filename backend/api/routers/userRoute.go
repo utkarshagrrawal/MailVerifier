@@ -14,7 +14,7 @@ func MailRouter() *mux.Router {
 	router.Use(middlewares.HandleError)
 	router.Use(middlewares.GenerateLogs)
 
-	router.HandleFunc("/api/verify", handlers.VerifyMail).Methods("GET", "OPTIONS")
+	router.HandleFunc("/verify", handlers.VerifyMail).Methods("GET", "OPTIONS")
 
 	return router
 }

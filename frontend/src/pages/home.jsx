@@ -63,7 +63,7 @@ export default function Home() {
     setLoading(true);
 
     axios
-      .get(import.meta.env.VITE_API_URL + "/api/verify?email=" + email)
+      .get(import.meta.env.VITE_API_URL + "/api/v1/verify?email=" + email)
       .then((res) => {
         if (res.data) {
           setResponse("Email is valid and deliverable.");
