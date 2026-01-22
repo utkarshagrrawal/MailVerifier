@@ -13,6 +13,7 @@ func MailRouter() *mux.Router {
 	router.Use(middlewares.ApplyCORS)
 	router.Use(middlewares.HandleError)
 	router.Use(middlewares.GenerateLogs)
+	router.Use(middlewares.RateLimiter)
 
 	router.HandleFunc("/verify", handlers.VerifyMail).Methods("GET", "OPTIONS")
 
